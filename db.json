@@ -1,0 +1,99 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "admin",
+      "email": "admin@example.com",
+      "role": "admin",
+      "permissions": ["edit_users", "view_workouts", "edit_workouts"]
+    },
+    {
+      "id": 2,
+      "username": "Howard",
+      "email": "dryadd44651@gmail.com",
+      "role": "user",
+      "permissions": ["view_workouts"]
+    }
+  ],
+  "workouts": {
+    "user_id": 2,
+    "training_data": {
+      "exercises": [
+        {
+          "name": "Squat",
+          "max1RM": "255",
+          "group": "leg",
+          "id": "exercise_1730526066727"
+        },
+        {
+          "name": "Side Squat",
+          "max1RM": "125",
+          "group": "leg",
+          "id": "exercise_1730528964434"
+        },
+        {
+          "name": "RDL",
+          "max1RM": "230",
+          "group": "leg",
+          "id": "exercise_1730528978495"
+        },
+        {
+          "name": "Side RDL",
+          "max1RM": "115",
+          "group": "leg",
+          "id": "exercise_1730528990572"
+        },
+        {
+          "name": "Bench Press",
+          "max1RM": "170",
+          "group": "chest",
+          "id": "exercise_1730529008912"
+        },
+        {
+          "name": "Dumbbell Press",
+          "max1RM": "125",
+          "group": "chest",
+          "id": "exercise_1730529024763"
+        },
+        {
+          "name": "Pulley Pull Down",
+          "max1RM": "160",
+          "group": "back",
+          "id": "exercise_1730529048617"
+        },
+        {
+          "name": "Side Row",
+          "max1RM": "75",
+          "group": "back",
+          "id": "exercise_1730529069183"
+        },
+        {
+          "name": "Shoulder Press",
+          "max1RM": "105",
+          "group": "shoulder",
+          "id": "exercise_1730529125028"
+        },
+        {
+          "name": "Dumbbell Shoulder Press",
+          "max1RM": "90",
+          "group": "shoulder",
+          "id": "exercise_1730529167817"
+        },
+        {
+          "name": "Curls",
+          "max1RM": "60",
+          "group": "arm",
+          "id": "exercise_1730529200039"
+        },
+        {
+          "name": "Narrow Bench Press",
+          "max1RM": "135",
+          "group": "arm",
+          "id": "exercise_1730529213191"
+        }
+      ],
+      "trainedGroups": [],
+      "currentCycle": "light"
+    }
+  }
+}

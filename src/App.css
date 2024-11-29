@@ -1,0 +1,43 @@
+/* App.css */
+
+/* 修改导航栏的样式 */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f9f9f9;
+  padding: 10px 20px;
+  border-bottom: 1px solid #ccc;
+}
+
+/* 将导航链接居中对齐并添加一些间距 */
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #007bff;
+  font-size: 16px;
+}
+
+/* 修改 "Hello, username" 的样式 */
+.nav-link.username {
+  font-weight: bold;
+}
+
+/* 修改登出按钮的样式 */
+.logout-button {
+  padding: 8px 12px;
+  font-size: 14px;
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  background-color: #ff1a1a;
+}
