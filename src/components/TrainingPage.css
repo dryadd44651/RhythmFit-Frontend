@@ -1,12 +1,8 @@
 /* TrainingPage.css */
 
 
-/* Group header style */
 .groupHeader {
-    display: flex;
-    align-items: center;
-    max-width: 200px; /* 控制每行的寬度 */
-    padding: 5px 0;
+    max-width: none; /* Remove the previous width limit if it exists */
 }
 
 /* Group title style */
@@ -35,24 +31,20 @@
 }
 
 .exerciseList {
-    padding-left: 10px;
+    display: flex;
+    flex-wrap: wrap; /* Allows wrapping to the next line if needed */
+    gap: 20px; /* Add space between cards */
+    justify-content: flex-start; /* Aligns cards to the left */
 }
 
-.exerciseCard {
+.exerciseCard, .trainedExercise {
+    width: 300px; /* Increase width here */
     padding: 10px;
     margin: 10px 0;
     border: 1px solid #ddd;
     border-radius: 5px;
     background-color: #f9f9f9;
-}
-
-.trainedExercise {
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #d3d3d3;
-    color: #aaa;
+    text-align: center;
 }
 
 .finishButton {
