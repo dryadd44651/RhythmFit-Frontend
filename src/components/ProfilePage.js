@@ -6,6 +6,7 @@ import basicTrainingData from './Basic_training_data.json';
 import axios from "axios";
 
 const muscleGroups = ["leg", "chest", "back", "shoulder", "arm"];
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8000";
 
 const ProfilePage = () => {
     const [exercises, setExercises] = useState([]);

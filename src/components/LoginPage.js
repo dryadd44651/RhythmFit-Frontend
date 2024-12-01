@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8000";
+
+
 const LoginPage = ({ setUsername }) => {
   const [username, setLocalUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -15,7 +18,7 @@ const LoginPage = ({ setUsername }) => {
     setError(""); // 清空之前的錯誤消息
 
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/token/", {
+      const response = await axios.post(`${API_BASE_URL}:8000/api/token/`, {
         username: username,
         password: password,
       });
