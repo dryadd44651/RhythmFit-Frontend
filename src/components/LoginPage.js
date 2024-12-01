@@ -18,7 +18,7 @@ const LoginPage = ({ setUsername }) => {
     setError(""); // 清空之前的錯誤消息
 
     try {
-      const response = await axios.post(`${API_BASE_URL}:8000/api/token/`, {
+      const response = await axios.post(`${API_BASE_URL}/api/token/`, {
         username: username,
         password: password,
       });
