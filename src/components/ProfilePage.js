@@ -41,7 +41,7 @@ const ProfilePage = () => {
   
     const handleEdit = (exercise) => {
       setEditExerciseId(exercise.id);
-      setEditedExercise({ name: exercise.name, max1RM: exercise.max1RM });
+      setEditedExercise({ name: exercise.name, max1RM: exercise.max1RM, group: exercise.group });
     };
   
     const handleEditChange = (e) => {
