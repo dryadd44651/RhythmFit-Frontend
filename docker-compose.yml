@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: rhythmfit-frontend-web  # Explicit image name
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
