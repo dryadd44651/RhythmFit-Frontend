@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8000";
 
@@ -10,8 +10,8 @@ const LoginPage = ({ setUsername }) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  localStorage.removeItem('username');
-  localStorage.removeItem('guestMode');
+  // localStorage.removeItem('username');
+  // localStorage.removeItem('guestMode');
   
   const handleLogin = async (e) => {
     e.preventDefault();
