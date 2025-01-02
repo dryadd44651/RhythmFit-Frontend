@@ -4,14 +4,13 @@ import axios from "axios";
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8000";
 
-
+console.log(API_BASE_URL);
 const LoginPage = ({ setUsername }) => {
   const [username, setLocalUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  // localStorage.removeItem('username');
-  // localStorage.removeItem('guestMode');
+
   
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -34,6 +33,8 @@ const LoginPage = ({ setUsername }) => {
       // 跳轉到主頁面或其他受保護的頁面
       navigate("/Profile");
     } catch (err) {
+      localStorage.removeItem('username');
+      localStorage.removeItem('guestMode');
       setError("Invalid username or password");
     }
   };
