@@ -17,10 +17,9 @@ const ProfilePage = () => {
     const [username, setUsername] = useState('');
     const navigate = useNavigate();
   
-    // useEffect(() => {
-    //   fetchUserProfile(navigate, setUsername);
-    //   getExercises(setExercises);
-    // }, [navigate]);
+    useEffect(() => {
+      getExercises(setExercises);
+    }, []);
   
     const handleInputChange = (e) => {
       const { name, value } = e.target;
@@ -59,43 +58,24 @@ const ProfilePage = () => {
     };
   
     const handleExport = async () => {
-      if (localStorage.getItem('guestMode')) {
-        // Guest mode export
-        const data = {
-          exercises,
-          trainedGroups: JSON.parse(localStorage.getItem("trainedGroups") || "[]"),
-          currentCycle: localStorage.getItem("currentCycle") || 'light'
-        };
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "training_data.json";
-        link.click();
-        URL.revokeObjectURL(url);
-      } else {
-        // Member mode export
         try {
           const accessToken = localStorage.getItem('accessToken');
           const response = await axios.get(`${API_BASE_URL}/api/exercises/`, {
             headers: { Authorization: `Bearer ${accessToken}` },
           });
-          const data = response.data;
-    
+          const data = response.data        
           const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
           const url = URL.createObjectURL(blob);
           const link = document.createElement("a");
           link.href = url;
           link.download = "training_data.json";
           link.click();
-          URL.revokeObjectURL(url);
-    
+          URL.revokeObjectURL(url)        
           alert("Data exported successfully!");
         } catch (err) {
           console.error("Failed to export data:", err);
           alert("Error exporting data.");
         }
-      }
     };
     
   
@@ -111,27 +91,16 @@ const ProfilePage = () => {
             alert("Invalid data format.");
             return;
           }
-    
-          if (localStorage.getItem('guestMode')) {
-            // Guest mode import
-            localStorage.setItem("trainedGroups", JSON.stringify(data.trainedGroups));
-            localStorage.setItem("currentCycle", data.currentCycle);
-            localStorage.setItem("exercises", JSON.stringify(data.exercises));
-            setExercises(data.exercises);
-            alert("Data imported successfully in guest mode!");
-          } else {
-            // Member mode import
-            const confirmOverwrite = window.confirm("This action will overwrite your current data. Are you sure?");
-            if (!confirmOverwrite) return;
-    
-            const accessToken = localStorage.getItem('accessToken');
-            await axios.post(`${API_BASE_URL}/api/exercises/reset/`, data, {
-              headers: { Authorization: `Bearer ${accessToken}` },
-            });
-    
-            setExercises(data.exercises);
-            alert("Data imported successfully for your account!");
-          }
+          const confirmOverwrite = window.confirm("This action will overwrite your current data. Are you sure?");
+          if (!confirmOverwrite) return;
+  
+          const accessToken = localStorage.getItem('accessToken');
+          await axios.post(`${API_BASE_URL}/api/exercises/reset/`, data, {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          });
+  
+          setExercises(data.exercises);
+          alert("Data imported successfully for your account!");
         } catch (err) {
           console.error("Failed to import data:", err);
           alert("Error importing data.");
@@ -142,19 +111,6 @@ const ProfilePage = () => {
     
   
     const loadDefaultPlan = async () => {
-      if (localStorage.getItem('guestMode')) {
-        const existingExercises = JSON.parse(localStorage.getItem('exercises')) || [];
-        if (existingExercises.length > 0) {
-          const confirmOverwrite = window.confirm("This action will overwrite your original plan. Are you sure you want to continue?");
-          if (!confirmOverwrite) return;
-        }
-    
-        localStorage.setItem("trainedGroups", JSON.stringify(basicTrainingData.trainedGroups));
-        localStorage.setItem("currentCycle", basicTrainingData.currentCycle);
-        localStorage.setItem("exercises", JSON.stringify(basicTrainingData.exercises));
-        setExercises(basicTrainingData.exercises);
-        alert("Default training plan loaded!");
-      } else {
         try {
           const confirmOverwrite = window.confirm("This action will overwrite your original plan. Are you sure you want to continue?");
           if (!confirmOverwrite) return;
@@ -175,7 +131,6 @@ const ProfilePage = () => {
         } catch (err) {
           console.error("Error resetting plan:", err);
         }
-      }
     };
     
   

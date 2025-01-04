@@ -34,16 +34,8 @@ const LoginPage = ({ setUsername }) => {
       navigate("/Profile");
     } catch (err) {
       localStorage.removeItem('username');
-      localStorage.removeItem('guestMode');
       setError("Invalid username or password");
     }
-  };
-
-  const handleGuestLogin = () => {
-    // 不需要 token，直接进入访客模式
-    localStorage.setItem("guestMode", "true");
-    setUsername("Guest");
-    navigate("/Profile");
   };
 
   const navigateToRegister = () => {
@@ -72,9 +64,6 @@ const LoginPage = ({ setUsername }) => {
           Login
         </button>
       </form>
-      <button onClick={handleGuestLogin} style={styles.guestButton}>
-        Log in as Guest
-      </button>
       <button onClick={navigateToRegister} style={styles.registerButton}>
         Register
       </button>
@@ -112,16 +101,6 @@ const styles = {
     border: "none",
     borderRadius: "5px",
     cursor: "pointer",
-  },
-  guestButton: {
-    padding: "10px",
-    fontSize: "16px",
-    backgroundColor: "#888",
-    color: "white",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    marginTop: "10px",
   },
   registerButton: {
     padding: "10px",

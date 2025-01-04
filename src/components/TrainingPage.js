@@ -25,30 +25,18 @@ const TrainingPage = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
 
-  // Step 1: Fetch user profile to determine authentication
-  // useEffect(() => {
-  //   const checkAuthentication = async () => {
-  //     await fetchUserProfile(navigate, setUsername);
-  //     setIsAuthenticated(!localStorage.getItem('guestMode'));
-  //   };
-
-  //   checkAuthentication();
-  // }, [navigate]);
-
-  // Step 2: Fetch exercises and current cycle after authentication is determined
   useEffect(() => {
-      getExercises(setExercises);
-      (async () => {
-        const cycle = await getCycle();
-        setCurrentCycle(cycle);
-      })();
-  });
+    getExercises(setExercises);
+    (async () => {
+        try {
+          const cycle = await getCycle();
+          setCurrentCycle(cycle);
+        } catch (err) {
+          console.error('Error fetching cycle:', err);
+        }
+    })();
+  }, []); // 添加依賴數組，確保只在首次渲染時執行
 
-  useEffect(() => {
-    if (localStorage.getItem('guestMode')) {
-      localStorage.setItem("trainedGroups", JSON.stringify(trainedGroups));
-    }
-  }, [trainedGroups]);
 
   const handleDone = (group) => {
     setTrainedGroups([...trainedGroups, group]);
