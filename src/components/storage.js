@@ -102,10 +102,10 @@ export const updateExercise = async (exerciseId, editedExercise, setExercises) =
 
 // 獲取用戶資訊
 export const fetchUserProfile = async (navigate, setUsername) => {
-  if (localStorage.getItem('guestMode')) {
-    setUsername("Guest");
-    return;
-  }
+  // if (localStorage.getItem('guestMode')) {
+  //   setUsername("Guest");
+  //   return;
+  // }
   let accessToken = localStorage.getItem('accessToken');
   if (!accessToken) {
     console.error("Access token not found");
@@ -135,6 +135,37 @@ export const fetchUserProfile = async (navigate, setUsername) => {
   }
 };
 
+
+export const auth = async () => {
+  let accessToken = localStorage.getItem('accessToken');
+  if (!accessToken) {
+    console.error("Access token not found");
+    return false;
+  }
+
+  try {
+    const response = await axios.get(`${API_BASE_URL}/api/users/`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    // setUsername(localStorage.getItem('username') || "Unknown User");
+    return true;
+  } catch (err) {
+    console.error(err);
+    if (err.response && err.response.status === 401) {
+      console.log("Access token expired, attempting to refresh...");
+      accessToken = await refreshToken();
+      if (accessToken) {
+        return auth(); // 再次嘗試請求
+      } else {
+        console.error("Unable to refresh token");
+      }
+    }
+    return false;
+  }
+};
+
 // 刷新存取令牌
 export const refreshAccessToken = async (navigate) => {
   const refreshToken = localStorage.getItem('refreshToken');
@@ -154,6 +185,25 @@ export const refreshAccessToken = async (navigate) => {
   } catch (err) {
     console.error("Failed to refresh token:", err);
     navigate('/login');
+  }
+};
+
+export const refreshToken = async () => {
+  const refreshToken = localStorage.getItem('refreshToken');
+  if (!refreshToken) {
+    console.error("Refresh token not found");
+    return;
+  }
+
+  try {
+    const response = await axios.post(`${API_BASE_URL}/api/token/refresh/`, {
+      refresh: refreshToken,
+    });
+    localStorage.setItem('accessToken', response.data.access);
+    console.log("Access token refreshed");
+    return response.data.access;
+  } catch (err) {
+    console.error("Failed to refresh token:", err);
   }
 };
 

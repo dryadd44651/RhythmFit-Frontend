@@ -1,0 +1,66 @@
+{
+  "exercises": [
+    {
+      "name": "Squat",
+      "max1RM": "150",
+      "group": "leg",
+      "id": "exercise_1730526066727"
+    },
+    {
+      "name": "Deadlift",
+      "max1RM": "150",
+      "group": "leg",
+      "id": "exercise_1730528978495"
+    },
+    {
+      "name": "Bench Press",
+      "max1RM": "100",
+      "group": "chest",
+      "id": "exercise_1730529008912"
+    },
+    {
+      "name": "Dumbbell Press",
+      "max1RM": "70",
+      "group": "chest",
+      "id": "exercise_1730529024763"
+    },
+    {
+      "name": "Pulley Pull Down",
+      "max1RM": "120",
+      "group": "back",
+      "id": "exercise_1730529048617"
+    },
+    {
+      "name": "Bar Row",
+      "max1RM": "80",
+      "group": "back",
+      "id": "exercise_1730529069183"
+    },
+    {
+      "name": "Shoulder Press",
+      "max1RM": "60",
+      "group": "shoulder",
+      "id": "exercise_1730529125028"
+    },
+    {
+      "name": "Dumbbell Shoulder Press",
+      "max1RM": "40",
+      "group": "shoulder",
+      "id": "exercise_1730529167817"
+    },
+    {
+      "name": "Curls",
+      "max1RM": "40",
+      "group": "arm",
+      "id": "exercise_1730529200039"
+    },
+    {
+      "name": "Narrow Bench Press",
+      "max1RM": "80",
+      "group": "arm",
+      "id": "exercise_1730529213191"
+    }
+  ],
+  "trainedGroups": [],
+  "currentCycle": "light"
+}

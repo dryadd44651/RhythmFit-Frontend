@@ -17,10 +17,10 @@ const ProfilePage = () => {
     const [username, setUsername] = useState('');
     const navigate = useNavigate();
   
-    useEffect(() => {
-      fetchUserProfile(navigate, setUsername);
-      getExercises(setExercises);
-    }, [navigate]);
+    // useEffect(() => {
+    //   fetchUserProfile(navigate, setUsername);
+    //   getExercises(setExercises);
+    // }, [navigate]);
   
     const handleInputChange = (e) => {
       const { name, value } = e.target;

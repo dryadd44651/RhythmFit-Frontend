@@ -4,6 +4,7 @@ import TrainingPage from './components/TrainingPage';
 import LoginPage from "./components/LoginPage";
 import ProfilePage from './components/ProfilePage';
 import RegisterPage from "./components/RegisterPage";
+import PrivateRoute from './components/PrivateRoute'; // 引入 PrivateRoute
 import './App.css';
 
 const App = () => {
@@ -25,7 +26,6 @@ const App = () => {
             <a href="/Training" className="nav-link">Training</a>
             <a href="/Profile" className="nav-link">Profile</a>
             {username ? (
-              // <span className="nav-link">Hello, {username}</span>
               <a href="/Profile" className="nav-link">Hello, {username}</a>
             ) : (
               <a href="/login" className="nav-link">Login</a>
@@ -35,8 +35,15 @@ const App = () => {
         </nav>
 
         <Routes>
-          <Route path="/Training" element={<TrainingPage />} />
-          <Route path="/Profile" element={<ProfilePage />} />
+          {/* 用 PrivateRoute 保護需要身份驗證的路由 */}
+          <Route
+            path="/Training"
+            element={<PrivateRoute element={<TrainingPage />} username={username} />}
+          />
+          <Route
+            path="/Profile"
+            element={<PrivateRoute element={<ProfilePage />} username={username} />}
+          />
           <Route path="/login" element={<LoginPage setUsername={setUsername} />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/" element={<h1>Welcome to the Fitness App</h1>} />

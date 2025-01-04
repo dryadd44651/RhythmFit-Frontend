@@ -26,25 +26,23 @@ const TrainingPage = () => {
   const navigate = useNavigate();
 
   // Step 1: Fetch user profile to determine authentication
-  useEffect(() => {
-    const checkAuthentication = async () => {
-      await fetchUserProfile(navigate, setUsername);
-      setIsAuthenticated(!localStorage.getItem('guestMode'));
-    };
+  // useEffect(() => {
+  //   const checkAuthentication = async () => {
+  //     await fetchUserProfile(navigate, setUsername);
+  //     setIsAuthenticated(!localStorage.getItem('guestMode'));
+  //   };
 
-    checkAuthentication();
-  }, [navigate]);
+  //   checkAuthentication();
+  // }, [navigate]);
 
   // Step 2: Fetch exercises and current cycle after authentication is determined
   useEffect(() => {
-    if (isAuthenticated) {
       getExercises(setExercises);
       (async () => {
         const cycle = await getCycle();
         setCurrentCycle(cycle);
       })();
-    }
-  }, [isAuthenticated]);
+  });
 
   useEffect(() => {
     if (localStorage.getItem('guestMode')) {

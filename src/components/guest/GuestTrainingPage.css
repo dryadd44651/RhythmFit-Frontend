@@ -1,0 +1,61 @@
+/* TrainingPage.css */
+
+
+.groupHeader {
+    max-width: none; /* Remove the previous width limit if it exists */
+}
+
+/* Group title style */
+.groupTitle {
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+/* Button style */
+.button {
+    padding: 8px 16px;
+    font-size: 14px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: auto; /* 讓按鈕自然靠右 */
+}
+
+
+.highlightedGroup {
+    font-size: 20px;
+    cursor: pointer;
+    color: blue;
+}
+
+.exerciseList {
+    display: flex;
+    flex-wrap: wrap; /* Allows wrapping to the next line if needed */
+    gap: 20px; /* Add space between cards */
+    justify-content: flex-start; /* Aligns cards to the left */
+}
+
+.exerciseCard, .trainedExercise {
+    width: 300px; /* Increase width here */
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+.finishButton {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 20px;
+    text-align: center;
+}
+
