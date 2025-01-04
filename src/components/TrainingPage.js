@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getExercises, updateExercise, fetchUserProfile, refreshAccessToken } from './storage';
+import { getExercises, updateCycle, getCycle, fetchUserProfile } from './storage';
 import { useNavigate } from 'react-router-dom';
 import './global.css';
 import './TrainingPage.css';
@@ -15,35 +15,42 @@ const muscleGroups = ["leg", "chest", "back", "shoulder", "arm"];
 
 const TrainingPage = () => {
   const [exercises, setExercises] = useState([]);
-  const [newExercise, setNewExercise] = useState({ name: '', max1RM: '', group: '' });
-  const [editExerciseId, setEditExerciseId] = useState(null);
-  const [editedExercise, setEditedExercise] = useState({ name: '', max1RM: '' });
-  const [username, setUsername] = useState('');
-  const navigate = useNavigate();
-
-  const [currentCycle, setCurrentCycle] = useState(() => {
-    return localStorage.getItem("currentCycle") || 'light';
-  });
   const [trainedGroups, setTrainedGroups] = useState(() => {
     const storedTrainedGroups = localStorage.getItem("trainedGroups");
     return storedTrainedGroups ? JSON.parse(storedTrainedGroups) : [];
   });
   const [expandedGroup, setExpandedGroup] = useState(null);
-  
-  // 檢查用戶是否已登入
+  const [currentCycle, setCurrentCycle] = useState('light');
+  const [username, setUsername] = useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const navigate = useNavigate();
+
+  // Step 1: Fetch user profile to determine authentication
   useEffect(() => {
-    fetchUserProfile(navigate, setUsername);
+    const checkAuthentication = async () => {
+      await fetchUserProfile(navigate, setUsername);
+      setIsAuthenticated(!localStorage.getItem('guestMode'));
+    };
+
+    checkAuthentication();
   }, [navigate]);
 
-  // 獲取用戶的訓練動作
+  // Step 2: Fetch exercises and current cycle after authentication is determined
   useEffect(() => {
-    getExercises(setExercises);
-  }, []);
+    if (isAuthenticated) {
+      getExercises(setExercises);
+      (async () => {
+        const cycle = await getCycle();
+        setCurrentCycle(cycle);
+      })();
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
-    localStorage.setItem("currentCycle", currentCycle);
-    localStorage.setItem("trainedGroups", JSON.stringify(trainedGroups));
-  }, [currentCycle, trainedGroups]);
+    if (localStorage.getItem('guestMode')) {
+      localStorage.setItem("trainedGroups", JSON.stringify(trainedGroups));
+    }
+  }, [trainedGroups]);
 
   const handleDone = (group) => {
     setTrainedGroups([...trainedGroups, group]);
@@ -57,47 +64,73 @@ const TrainingPage = () => {
     setExpandedGroup(expandedGroup === group ? null : group);
   };
 
-  const finishCycle = () => {
-    const untrainedGroups = muscleGroups.filter(group => !trainedGroups.includes(group) && group !== 'arm');
+  const finishCycle = async () => {
+    const untrainedGroups = muscleGroups.filter(
+      (group) => !trainedGroups.includes(group) && group !== "arm"
+    );
+
     if (untrainedGroups.length > 0) {
-      const confirmNextCycle = window.confirm("There are untrained groups. Are you sure you want to proceed to the next cycle?");
+      const confirmNextCycle = window.confirm(
+        "There are untrained groups. Are you sure you want to proceed to the next cycle?"
+      );
       if (!confirmNextCycle) return;
     }
+
     setTrainedGroups([]);
-    setCurrentCycle((prevCycle) => {
-      const cycles = ["light", "medium", "heavy", "deload"];
-      const nextIndex = (cycles.indexOf(prevCycle) + 1) % cycles.length;
-      return cycles[nextIndex];
-    });
+    try {
+      await updateCycle();
+      setCurrentCycle(await getCycle());
+    } catch (err) {
+      console.error("Failed to update cycle:", err);
+      alert("An error occurred while updating the cycle. Please try again.");
+    }
   };
 
   return (
     <div className="outerContainer">
       <div className="container">
         <h1 className="title">Training Page</h1>
-        <h2>Current Cycle: {currentCycle.charAt(0).toUpperCase() + currentCycle.slice(1)}</h2>
+        <h2>
+          {/* Current Cycle: {currentCycle.charAt(0).toUpperCase() + currentCycle.slice(1)} */}
+          Current Cycle: {currentCycle}
+        </h2>
 
         {muscleGroups.map((group) => {
           const isTrained = trainedGroups.includes(group);
-          const groupExercises = exercises.filter((exercise) => exercise.group === group);
+          const groupExercises = exercises.filter(
+            (exercise) => exercise.group === group
+          );
 
           return (
-              <div key={group} className="groupHeader">
-                <h3 className="groupTitle" onClick={() => toggleGroup(group)}>
-                  {group.charAt(0).toUpperCase() + group.slice(1)}
-                </h3>
-                {isTrained ? (
-                  <button onClick={() => handleRetrain(group)} className="button">Retrain</button>
-                ) : (
-                  <button onClick={() => handleDone(group)} className="button">Done</button>
-                )}
-              
+            <div key={group} className="groupHeader">
+              <h3 className="groupTitle" onClick={() => toggleGroup(group)}>
+                {group.charAt(0).toUpperCase() + group.slice(1)}
+              </h3>
+              {isTrained ? (
+                <button onClick={() => handleRetrain(group)} className="button">
+                  Retrain
+                </button>
+              ) : (
+                <button onClick={() => handleDone(group)} className="button">
+                  Done
+                </button>
+              )}
+
               {expandedGroup === group && (
                 <div className="exerciseList">
                   {groupExercises.map((exercise) => (
-                    <div key={exercise.id} className={isTrained ? "trainedExercise" : "exerciseCard"}>
+                    <div
+                      key={exercise.id}
+                      className={isTrained ? "trainedExercise" : "exerciseCard"}
+                    >
                       <h4>{exercise.name}</h4>
-                      <p>Weight: {Math.round(exercise.max1RM * cycles[currentCycle].rm / 100)} lb</p>
+                      <p>
+                        Weight:{" "}
+                        {Math.round(
+                          exercise.max1RM * cycles[currentCycle].rm / 100
+                        )}{" "}
+                        lb
+                      </p>
                       <p>Reps: {cycles[currentCycle].times.join(" - ")}</p>
                       <p>Sets: {cycles[currentCycle].sets}</p>
                     </div>
@@ -108,7 +141,9 @@ const TrainingPage = () => {
           );
         })}
 
-        <button onClick={finishCycle} className="finishButton">Finish Cycle</button>
+        <button onClick={finishCycle} className="finishButton">
+          Finish Cycle
+        </button>
       </div>
     </div>
   );

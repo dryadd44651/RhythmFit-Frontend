@@ -1,3 +1,4 @@
+//storage.js
 import axios from "axios";
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8000";
@@ -154,4 +155,63 @@ export const refreshAccessToken = async (navigate) => {
     console.error("Failed to refresh token:", err);
     navigate('/login');
   }
+};
+
+// 更新循環
+export const updateCycle = async () => {
+  let currentCycle = await setCurrentCycle(await getCycle());
+  console.log("newCycle: ",currentCycle);
+  if (localStorage.getItem('guestMode')) {
+    console.log("Guest mode: Cycle update is only stored locally.");
+    localStorage.setItem("currentCycle",setCurrentCycle((currentCycle)));
+    return localStorage.getItem("currentCycle") || 'light';
+  }
+
+  const accessToken = localStorage.getItem('accessToken');
+  try {
+    const response = await axios.put(
+      `${API_BASE_URL}/api/workouts/1/`,
+      { currentCycle },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log("Cycle updated successfully on the server.");
+    return response.data;
+  } catch (err) {
+    console.error("Failed to update cycle:", err);
+    throw err;
+  }
+};
+
+export const getCycle = async () => {
+  if (localStorage.getItem('guestMode')) {
+    console.log("Guest mode: Cycle update is only stored locally.");
+    return localStorage.getItem("currentCycle") || 'light';
+  }
+
+  const accessToken = localStorage.getItem('accessToken');
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/api/workouts/`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log("Cycle: ", response.data[0]['currentCycle']);
+    return response.data[0]['currentCycle'];
+  } catch (err) {
+    console.error("Failed to update cycle:", err);
+    throw err;
+  }
+};
+
+const setCurrentCycle = (prevCycle) => {
+  const cycles = ["light", "medium", "heavy", "deload"];
+  const nextIndex = (cycles.indexOf(prevCycle) + 1) % cycles.length;
+  return cycles[nextIndex];
 };
