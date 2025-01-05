@@ -1,26 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getExercises, updateExercise, addExercise, deleteExercise, fetchUserProfile } from './storage';
+import { getExercises, updateExercise, addExercise, deleteExercise } from './storage';
 import './ProfilePage.css';
 import basicTrainingData from './Basic_training_data.json';
+import { useAppContext,AppContext } from "../AppContext";
 import axios from "axios";
 
 const muscleGroups = ["leg", "chest", "back", "shoulder", "arm"];
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8000";
 
 const ProfilePage = () => {
-    const [exercises, setExercises] = useState([]);
+    // const [exercises, setExercises] = useState([]);
+    // const { exercises, setExercises } = useContext(AppContext);
     const [newExercise, setNewExercise] = useState({ name: '', max1RM: '', group: '' });
     const [expandedGroup, setExpandedGroup] = useState(null);
     const [editExerciseId, setEditExerciseId] = useState(null);
     const [editedExercise, setEditedExercise] = useState({ name: '', max1RM: '' });
     const [username, setUsername] = useState('');
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
+    const {
+      exercises,
+      addExercise,
+      deleteExercise,
+      updateExercise,
+      currentCycle,
+      trainedGroups,
+      setTrainedGroups,
+      finishCycle,
+    } = useAppContext();  
   
-    useEffect(() => {
-      getExercises(setExercises);
-    }, []);
+    // useEffect(() => {
+    //   console.log("profile effect");
+    //   getExercises(setExercises);
+    // }, []);
   
+    
+
     const handleInputChange = (e) => {
       const { name, value } = e.target;
       setNewExercise((prev) => ({ ...prev, [name]: value }));
@@ -29,13 +44,13 @@ const ProfilePage = () => {
     const handleAddExercise = (e) => {
       e.preventDefault();
       if (newExercise.name && newExercise.max1RM && newExercise.group) {
-        addExercise(newExercise, setExercises);
+        addExercise(newExercise);
         setNewExercise({ name: '', max1RM: '', group: '' });
       }
     };
   
     const handleDelete = (exerciseId) => {
-      deleteExercise(exerciseId, setExercises);
+      deleteExercise(exerciseId);
     };
   
     const handleEdit = (exercise) => {
@@ -49,7 +64,7 @@ const ProfilePage = () => {
     };
   
     const handleSaveEdit = (exerciseId) => {
-      updateExercise(exerciseId, editedExercise, setExercises);
+      updateExercise(exerciseId, editedExercise);
       setEditExerciseId(null);
     };
   
@@ -99,7 +114,7 @@ const ProfilePage = () => {
             headers: { Authorization: `Bearer ${accessToken}` },
           });
   
-          setExercises(data.exercises);
+          // setExercises(data.exercises);
           alert("Data imported successfully for your account!");
         } catch (err) {
           console.error("Failed to import data:", err);
@@ -123,7 +138,7 @@ const ProfilePage = () => {
           });
     
           if (response.status === 200) {
-            setExercises(basicTrainingData.exercises);
+            // setExercises(basicTrainingData.exercises);
             alert("Default training plan loaded!");
           } else {
             console.error("Failed to reset plan:", response);

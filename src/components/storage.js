@@ -5,7 +5,7 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:800
 
 
 // 獲取用戶的訓練動作
-export const getExercises = async (setExercises) => {
+export const getExercises = async () => {
   const accessToken = localStorage.getItem('accessToken');
   try {
     const response = await axios.get(`${API_BASE_URL}/api/exercises/`, {
@@ -14,14 +14,17 @@ export const getExercises = async (setExercises) => {
       },
     });
     if (Array.isArray(response.data)) {
-      setExercises(response.data);
+      // setExercises(response.data);
+      return response.data;
     } else {
       console.error("API response is not an array", response.data);
-      setExercises([]);
+      // setExercises([]);
+      return [];
     }
   } catch (err) {
     console.error("Failed to fetch exercises:", err);
-    setExercises([]);
+    // setExercises([]);
+    return [];
   }
 };
 
@@ -35,7 +38,8 @@ export const addExercise = async (newExercise, setExercises) => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      getExercises(setExercises);
+      const updatedExercises = await getExercises();
+      setExercises(updatedExercises);
     } catch (err) {
       console.error("Failed to add exercise:", err);
     }
@@ -50,7 +54,8 @@ export const deleteExercise = async (exerciseId, setExercises) => {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    getExercises(setExercises);
+    const updatedExercises = await getExercises();
+    setExercises(updatedExercises);
   } catch (err) {
     console.error("Failed to delete exercise:", err);
   }
@@ -65,7 +70,8 @@ export const updateExercise = async (exerciseId, editedExercise, setExercises) =
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      getExercises(setExercises);
+      const updatedExercises = await getExercises();
+      setExercises(updatedExercises);
     } catch (err) {
       console.error("Failed to update exercise:", err);
     }

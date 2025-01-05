@@ -6,6 +6,7 @@ const PrivateRoute = ({ element }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
 
   useEffect(() => {
+    console.log("Private route effect");
     async function checkAuth() {
       const result = await auth();
       setIsAuthenticated(result);

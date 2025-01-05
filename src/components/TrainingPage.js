@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { getExercises, updateCycle, getCycle, fetchUserProfile } from './storage';
 import { useNavigate } from 'react-router-dom';
+import { useAppContext } from '../AppContext';
 import './global.css';
 import './TrainingPage.css';
+        
 
 const cycles = {
   light: { rm: 60, times: [12, 15], sets: 6 },
@@ -14,29 +16,37 @@ const cycles = {
 const muscleGroups = ["leg", "chest", "back", "shoulder", "arm"];
 
 const TrainingPage = () => {
-  const [exercises, setExercises] = useState([]);
-  const [trainedGroups, setTrainedGroups] = useState(() => {
-    const storedTrainedGroups = localStorage.getItem("trainedGroups");
-    return storedTrainedGroups ? JSON.parse(storedTrainedGroups) : [];
-  });
+  // const [exercises, setExercises] = useState([]);
+  // const [trainedGroups, setTrainedGroups] = useState(() => {
+  //   const storedTrainedGroups = localStorage.getItem("trainedGroups");
+  //   return storedTrainedGroups ? JSON.parse(storedTrainedGroups) : [];
+  // });
   const [expandedGroup, setExpandedGroup] = useState(null);
-  const [currentCycle, setCurrentCycle] = useState('light');
+  // const [currentCycle, setCurrentCycle] = useState('light');
   const [username, setUsername] = useState('');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const navigate = useNavigate();
+  // const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // const navigate = useNavigate();
 
-  useEffect(() => {
-    getExercises(setExercises);
-    (async () => {
-        try {
-          const cycle = await getCycle();
-          setCurrentCycle(cycle);
-        } catch (err) {
-          console.error('Error fetching cycle:', err);
-        }
-    })();
-  }, []); // 添加依賴數組，確保只在首次渲染時執行
+  // useEffect(() => {
+  //   console.log("training effect");
+  //   getExercises(setExercises);
+  //   (async () => {
+  //       try {
+  //         const cycle = await getCycle();
+  //         setCurrentCycle(cycle);
+  //       } catch (err) {
+  //         console.error('Error fetching cycle:', err);
+  //       }
+  //   })();
+  // }, []); // 添加依賴數組，確保只在首次渲染時執行
 
+  const {
+    exercises,
+    currentCycle,
+    trainedGroups,
+    setTrainedGroups,
+    finishCycle,
+  } = useAppContext();  
 
   const handleDone = (group) => {
     setTrainedGroups([...trainedGroups, group]);
@@ -50,27 +60,27 @@ const TrainingPage = () => {
     setExpandedGroup(expandedGroup === group ? null : group);
   };
 
-  const finishCycle = async () => {
-    const untrainedGroups = muscleGroups.filter(
-      (group) => !trainedGroups.includes(group) && group !== "arm"
-    );
+  // const finishCycle = async () => {
+  //   const untrainedGroups = muscleGroups.filter(
+  //     (group) => !trainedGroups.includes(group) && group !== "arm"
+  //   );
 
-    if (untrainedGroups.length > 0) {
-      const confirmNextCycle = window.confirm(
-        "There are untrained groups. Are you sure you want to proceed to the next cycle?"
-      );
-      if (!confirmNextCycle) return;
-    }
+  //   if (untrainedGroups.length > 0) {
+  //     const confirmNextCycle = window.confirm(
+  //       "There are untrained groups. Are you sure you want to proceed to the next cycle?"
+  //     );
+  //     if (!confirmNextCycle) return;
+  //   }
 
-    setTrainedGroups([]);
-    try {
-      await updateCycle();
-      setCurrentCycle(await getCycle());
-    } catch (err) {
-      console.error("Failed to update cycle:", err);
-      alert("An error occurred while updating the cycle. Please try again.");
-    }
-  };
+  //   setTrainedGroups([]);
+  //   try {
+  //     await updateCycle();
+  //     setCurrentCycle(await getCycle());
+  //   } catch (err) {
+  //     console.error("Failed to update cycle:", err);
+  //     alert("An error occurred while updating the cycle. Please try again.");
+  //   }
+  // };
 
   return (
     <div className="outerContainer">
