@@ -5,6 +5,24 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:800
 
 
 // 獲取用戶的訓練動作
+export const getUsername = async (userId) => {
+  // let userId = 2;
+  const accessToken = localStorage.getItem('accessToken');
+  try {
+    const response = await axios.get(`${API_BASE_URL}/api/users/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return response.data.username;
+  } catch (err) {
+    console.error("Failed to fetch exercises:", err);
+    return '';
+  }
+};
+
+
+// 獲取用戶的訓練動作
 export const getExercises = async () => {
   const accessToken = localStorage.getItem('accessToken');
   try {
@@ -114,7 +132,7 @@ export const refreshAccessToken = async (navigate) => {
   const refreshToken = localStorage.getItem('refreshToken');
   if (!refreshToken) {
     console.error("Refresh token not found");
-    navigate('/login');
+    // navigate('/login');
     return;
   }
 
@@ -147,6 +165,34 @@ export const refreshToken = async () => {
     return response.data.access;
   } catch (err) {
     console.error("Failed to refresh token:", err);
+  }
+};
+
+export const getUserID = async () => {
+  const accessToken = localStorage.getItem('accessToken');
+  if (!accessToken) {
+    console.error("Access token not found");
+    return -1;
+  }
+
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/api/workouts/`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log("id: ", response.data[0]['id']);
+    return response.data[0]['id'];
+  } catch (err) {
+    console.error("Failed to get id", err);
+    if (err.response && err.response.status === 401) {
+      console.log("Unauthorized access");
+      return -1;
+    }
+    throw err;
   }
 };
 
@@ -192,6 +238,8 @@ export const getCycle = async () => {
     throw err;
   }
 };
+
+
 
 const setCurrentCycle = (prevCycle) => {
   const cycles = ["light", "medium", "heavy", "deload"];

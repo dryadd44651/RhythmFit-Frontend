@@ -7,6 +7,7 @@ const AppContext = createContext();
 // 創建 Provider
 export const AppProvider = ({ children }) => {
   const [exercises, setExercises] = useState([]);
+  const [username, setUsername] = useState("");
   const [currentCycle, setCurrentCycle] = useState("light");
   const [trainedGroups, setTrainedGroups] = useState(() => {
     const stored = localStorage.getItem("trainedGroups");
@@ -14,20 +15,20 @@ export const AppProvider = ({ children }) => {
   });
 
   // 加載初始數據
-  useEffect(() => {
-    console.log("context effect");
-    (async () => {
-      try {
-        const exercisesData = await storage.getExercises();
-        const cycle = await storage.getCycle();
-        setExercises(exercisesData);
-        setCurrentCycle(cycle);
-        console.log("initial data: ", exercisesData, cycle)
-      } catch (error) {
-        console.error("Error loading data:", error);
-      }
-    })();
-  }, []);
+  // useEffect(() => {
+  //   console.log("context effect");
+  //   (async () => {
+  //     try {
+  //       const exercisesData = await storage.getExercises();
+  //       const cycle = await storage.getCycle();
+  //       setExercises(exercisesData);
+  //       setCurrentCycle(cycle);
+  //       console.log("initial data: ", exercisesData, cycle)
+  //     } catch (error) {
+  //       console.error("Error loading data:", error);
+  //     }
+  //   })();
+  // }, []);
 
   // 更新週期
   const finishCycle = async () => {
@@ -40,6 +41,37 @@ export const AppProvider = ({ children }) => {
       console.error("Failed to update cycle:", error);
     }
   };
+
+  const auth = async () => {
+    let userID = await storage.getUserID();
+    console.log("userID: ", userID);
+    if (userID<0) {
+      await storage.refreshAccessToken();
+      userID = await storage.getUserID();
+    }
+    console.log("userID: ", userID);
+    if (userID>=0){
+      await updateData(userID);
+      return true;
+    } else{
+      return false;
+    }
+  }
+
+  const updateData = async (userID) => {
+    try {
+      const user = await storage.getUsername(userID);
+      const exercisesData = await storage.getExercises();
+      const cycle = await storage.getCycle();
+      setUsername(user);
+      setExercises(exercisesData);
+      setCurrentCycle(cycle);
+    } catch (error) {
+      console.error("Error loading data:", error);
+    }
+  }    
+
+  const getExercises = async () => {}
 
   const addExercise = async(newExercise) =>{
     storage.addExercise(newExercise, setExercises);
@@ -62,6 +94,9 @@ export const AppProvider = ({ children }) => {
         trainedGroups,
         setTrainedGroups,
         finishCycle,
+        auth,
+        username,
+        setUsername,
       }}
     >
       {children}

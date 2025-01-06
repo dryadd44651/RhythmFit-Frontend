@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { getExercises, updateExercise, addExercise, deleteExercise } from './storage';
 import './ProfilePage.css';
 import basicTrainingData from './Basic_training_data.json';
-import { useAppContext,AppContext } from "../AppContext";
+import { useAppContext } from "../AppContext";
 import axios from "axios";
 
 const muscleGroups = ["leg", "chest", "back", "shoulder", "arm"];
@@ -27,7 +27,7 @@ const ProfilePage = () => {
       trainedGroups,
       setTrainedGroups,
       finishCycle,
-    } = useAppContext();  
+    } = useAppContext(); 
   
     // useEffect(() => {
     //   console.log("profile effect");
@@ -152,9 +152,7 @@ const ProfilePage = () => {
     return (
       <div className="outerContainer">
         <div className="container">
-          <h1 className="title">Profile Page</h1>
-          <h2>Welcome, {username}</h2> {/* 顯示用戶名 */}
-  
+          <h1 className="title">Profile Page</h1>  
           {/* 新增動作表單 */}
           <form className="form" onSubmit={handleAddExercise}>
             <input

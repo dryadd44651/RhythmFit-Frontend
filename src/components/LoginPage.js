@@ -25,15 +25,15 @@ const LoginPage = ({ setUsername }) => {
       // 保存 token 到 localStorage
       localStorage.setItem("accessToken", response.data.access);
       localStorage.setItem("refreshToken", response.data.refresh);
-      localStorage.setItem("username", username);
+      // localStorage.setItem("username", username);
 
       // 設置全局 username 狀態
-      setUsername(username);
+      // setUsername(username);
 
       // 跳轉到主頁面或其他受保護的頁面
       navigate("/Profile");
     } catch (err) {
-      localStorage.removeItem('username');
+      // localStorage.removeItem('username');
       setError("Invalid username or password");
     }
   };

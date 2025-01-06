@@ -5,20 +5,16 @@ import LoginPage from "./components/LoginPage";
 import ProfilePage from './components/ProfilePage';
 import RegisterPage from "./components/RegisterPage";
 import PrivateRoute from './components/PrivateRoute'; // 引入 PrivateRoute
-import { AppProvider } from './AppContext'; // 引入 AppProvider
+import { AppProvider,useAppContext } from './AppContext'; // 引入 AppProvider
 
 import './App.css';
 
 const App = () => {
-  const [username, setUsername] = useState(null);
-
-  useEffect(() => {
-    // 檢查本地存儲中是否有訪問 token，如果有就設置用戶名
-    const storedUsername = localStorage.getItem('username');
-    if (storedUsername) {
-      setUsername(storedUsername);
-    }
-  }, []);
+  // const [username, setUsername] = useState(null);
+  const {
+    username,
+    setUsername,
+  } = useAppContext();
 
   return (
     <Router>
@@ -40,11 +36,14 @@ const App = () => {
           {/* 用 PrivateRoute 保護需要身份驗證的路由 */}
             <Route
               path="/Training"
-              element={<PrivateRoute element={<AppProvider><TrainingPage /></AppProvider>} username={username} />}
+              // element={<PrivateRoute element={<AppProvider><TrainingPage /></AppProvider>} username={username} />}
+              element={<PrivateRoute element={<TrainingPage />} username={username} />}
+
             />
             <Route
               path="/Profile"
-              element={<PrivateRoute element={<AppProvider><ProfilePage /></AppProvider>} username={username} />}
+              // element={<PrivateRoute element={<AppProvider><ProfilePage /></AppProvider>} username={username} />}
+              element={<PrivateRoute element={<ProfilePage />} username={username} />}
             />
           <Route path="/login" element={<LoginPage setUsername={setUsername} />} />
           <Route path="/register" element={<RegisterPage />} />
@@ -62,8 +61,6 @@ const LogoutButton = ({ setUsername }) => {
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
-    localStorage.removeItem('username');
-    localStorage.removeItem('guestMode');
 
     setUsername(null);
     navigate('/login');
