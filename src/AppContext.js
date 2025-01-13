@@ -38,8 +38,7 @@ export const AppProvider = ({ children }) => {
     try {
       await storage.updateCycle();
       const newCycle = await storage.getCycle();
-      // setCurrentCycle(newCycle);
-      setTrainingSession({ ...trainingSession, trainedGroups: [], currentCycle: newCycle });
+      handleSetTrainingSession({ ...trainingSession, trainedGroups: [], currentCycle: newCycle });
     } catch (error) {
       console.error("Failed to update cycle:", error);
     }
@@ -67,7 +66,7 @@ export const AppProvider = ({ children }) => {
       const exercisesData = await storage.getExercises();
       // const cycle = await storage.getCycle();
       const trainingSession = await storage.getWorkout();
-      setTrainingSession(trainingSession);
+      handleSetTrainingSession(trainingSession);
       console.log("trainingSession: ", trainingSession);
       setUsername(user);
       setExercises(exercisesData);
@@ -97,10 +96,7 @@ export const AppProvider = ({ children }) => {
         exercises,
         addExercise,
         deleteExercise,
-        updateExercise,
-        // currentCycle,
-        // trainedGroups,
-        // setTrainedGroups,
+        updateExercise,        
         finishCycle,
         trainingSession,
         handleSetTrainingSession,
