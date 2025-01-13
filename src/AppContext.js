@@ -18,14 +18,13 @@ class TrainingSession {
 export const AppProvider = ({ children }) => {
   const [exercises, setExercises] = useState([]);
   const [username, setUsername] = useState("");
-  // const [currentCycle, setCurrentCycle] = useState("light");
   const [trainingSession, setTrainingSession] = useState(new TrainingSession(-1, "light", [], ""));
 
   const handleSetTrainingSession = async (newSession) => {
     await storage.updateWorkout(newSession);
     const settedSession = await storage.getWorkout();
-    console.log("newSession: ", newSession);
-    console.log("settedSession: ", settedSession);
+    // console.log("newSession: ", newSession);
+    // console.log("settedSession: ", settedSession);
     setTrainingSession(settedSession);
   };
   // const [trainedGroups, setTrainedGroups] = useState(() => {
@@ -61,20 +60,21 @@ export const AppProvider = ({ children }) => {
   }
 
   const updateData = async (userID) => {
-    try {
-      const user = await storage.getUsername(userID);
-      const exercisesData = await storage.getExercises();
-      // const cycle = await storage.getCycle();
-      const trainingSession = await storage.getWorkout();
-      handleSetTrainingSession(trainingSession);
-      console.log("trainingSession: ", trainingSession);
-      setUsername(user);
-      setExercises(exercisesData);
-      // setCurrentCycle(cycle);
-    } catch (error) {
-      console.error("Error loading data:", error);
-    }
-  }    
+      try {
+        const user = await storage.getUsername(userID);
+        const exercisesData = await storage.getExercises();
+        // const cycle = await storage.getCycle();
+        const trainingSession = await storage.getWorkout();
+        handleSetTrainingSession(trainingSession);
+        // console.log("trainingSession: ", trainingSession);
+        setUsername(user);
+        setExercises(exercisesData);
+        console.log("exercises: ", exercisesData);
+        // setCurrentCycle(cycle);
+      } catch (error) {
+        console.error("Error loading data:", error);
+      }
+    }    
 
   // const getExercises = async () => {}
 

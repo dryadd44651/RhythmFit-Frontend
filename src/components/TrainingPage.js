@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { getExercises, updateCycle, getCycle, fetchUserProfile } from './storage';
-import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../AppContext';
 import './global.css';
 import './TrainingPage.css';
@@ -60,8 +58,8 @@ const TrainingPage = () => {
   const handleDone = (group) => {
     // setTrainedGroups([...trainingSession.trainedGroups, group]);
     const newSession = new TrainingSession(trainingSession.id, trainingSession.currentCycle, [...trainingSession.trainedGroups, group], trainingSession.user);
-    console.log("group: ", group);
-    console.log("newSession: ", newSession);
+    // console.log("group: ", group);
+    // console.log("newSession: ", newSession);
     handleSetTrainingSession(newSession);
   };
 
@@ -86,9 +84,9 @@ const TrainingPage = () => {
         {muscleGroups.map((group) => {
           // console.log("trainingSession.trainedGroups: ", trainingSession.trainedGroups);
           const isTrained = trainingSession.trainedGroups.includes(group);
-          const groupExercises = exercises.filter(
-            (exercise) => exercise.group === group
-          );
+            const groupExercises = exercises.filter(
+            (exercise) => exercise.group.slice(0, 3).toUpperCase() === group.slice(0, 3).toUpperCase()
+            );
 
           return (
             <div key={group} className="groupHeader">
