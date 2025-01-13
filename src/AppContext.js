@@ -4,39 +4,42 @@ import * as storage from "./components/storage";
 // 創建 Context
 const AppContext = createContext();
 
+class TrainingSession {
+  constructor(id, currentCycle, trainedGroups = [], user) {
+    this.id = id;
+    this.currentCycle = currentCycle;
+    this.trainedGroups = trainedGroups;
+    this.user = user;
+  }
+}
+
+
 // 創建 Provider
 export const AppProvider = ({ children }) => {
   const [exercises, setExercises] = useState([]);
   const [username, setUsername] = useState("");
-  const [currentCycle, setCurrentCycle] = useState("light");
-  const [trainedGroups, setTrainedGroups] = useState(() => {
-    const stored = localStorage.getItem("trainedGroups");
-    return stored ? JSON.parse(stored) : [];
-  });
+  // const [currentCycle, setCurrentCycle] = useState("light");
+  const [trainingSession, setTrainingSession] = useState(new TrainingSession(-1, "light", [], ""));
 
-  // 加載初始數據
-  // useEffect(() => {
-  //   console.log("context effect");
-  //   (async () => {
-  //     try {
-  //       const exercisesData = await storage.getExercises();
-  //       const cycle = await storage.getCycle();
-  //       setExercises(exercisesData);
-  //       setCurrentCycle(cycle);
-  //       console.log("initial data: ", exercisesData, cycle)
-  //     } catch (error) {
-  //       console.error("Error loading data:", error);
-  //     }
-  //   })();
-  // }, []);
+  const handleSetTrainingSession = async (newSession) => {
+    await storage.updateWorkout(newSession);
+    const settedSession = await storage.getWorkout();
+    console.log("newSession: ", newSession);
+    console.log("settedSession: ", settedSession);
+    setTrainingSession(settedSession);
+  };
+  // const [trainedGroups, setTrainedGroups] = useState(() => {
+  //   const stored = localStorage.getItem("trainedGroups");
+  //   return stored ? JSON.parse(stored) : [];
+  // });
 
   // 更新週期
   const finishCycle = async () => {
     try {
       await storage.updateCycle();
       const newCycle = await storage.getCycle();
-      setCurrentCycle(newCycle);
-      setTrainedGroups([]); // 清空已訓練組
+      // setCurrentCycle(newCycle);
+      setTrainingSession({ ...trainingSession, trainedGroups: [], currentCycle: newCycle });
     } catch (error) {
       console.error("Failed to update cycle:", error);
     }
@@ -44,12 +47,12 @@ export const AppProvider = ({ children }) => {
 
   const auth = async () => {
     let userID = await storage.getUserID();
-    console.log("userID: ", userID);
+    // console.log("userID: ", userID);
     if (userID<0) {
       await storage.refreshAccessToken();
       userID = await storage.getUserID();
     }
-    console.log("userID: ", userID);
+    // console.log("userID: ", userID);
     if (userID>=0){
       await updateData(userID);
       return true;
@@ -62,16 +65,19 @@ export const AppProvider = ({ children }) => {
     try {
       const user = await storage.getUsername(userID);
       const exercisesData = await storage.getExercises();
-      const cycle = await storage.getCycle();
+      // const cycle = await storage.getCycle();
+      const trainingSession = await storage.getWorkout();
+      setTrainingSession(trainingSession);
+      console.log("trainingSession: ", trainingSession);
       setUsername(user);
       setExercises(exercisesData);
-      setCurrentCycle(cycle);
+      // setCurrentCycle(cycle);
     } catch (error) {
       console.error("Error loading data:", error);
     }
   }    
 
-  const getExercises = async () => {}
+  // const getExercises = async () => {}
 
   const addExercise = async(newExercise) =>{
     storage.addExercise(newExercise, setExercises);
@@ -83,6 +89,8 @@ export const AppProvider = ({ children }) => {
   const updateExercise = async(exerciseId, editedExercise) =>{
     storage.updateExercise(exerciseId, editedExercise, setExercises);
   }
+
+
   return (
     <AppContext.Provider
       value={{
@@ -90,10 +98,12 @@ export const AppProvider = ({ children }) => {
         addExercise,
         deleteExercise,
         updateExercise,
-        currentCycle,
-        trainedGroups,
-        setTrainedGroups,
+        // currentCycle,
+        // trainedGroups,
+        // setTrainedGroups,
         finishCycle,
+        trainingSession,
+        handleSetTrainingSession,
         auth,
         username,
         setUsername,

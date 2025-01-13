@@ -234,12 +234,51 @@ export const getCycle = async () => {
     console.log("Cycle: ", response.data[0]['currentCycle']);
     return response.data[0]['currentCycle'];
   } catch (err) {
-    console.error("Failed to update cycle:", err);
+    console.error("Failed to get cycle:", err);
+    throw err;
+  }
+};
+
+export const getWorkout = async () => {
+  const accessToken = localStorage.getItem('accessToken');
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/api/workouts/`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log("Workout: ", response.data[0]);
+    return response.data[0];
+  } catch (err) {
+    console.error("Failed to get workout:", err);
     throw err;
   }
 };
 
 
+export const updateWorkout = async (newSession) => {
+
+  const accessToken = localStorage.getItem('accessToken');
+  try {
+    const response = await axios.put(
+      `${API_BASE_URL}/api/workouts/1/`,
+      newSession,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log("Workout updated successfully on the server.");
+    return response.data;
+  } catch (err) {
+    console.error("Failed to update Workout:", err);
+    throw err;
+  }
+};
 
 const setCurrentCycle = (prevCycle) => {
   const cycles = ["light", "medium", "heavy", "deload"];

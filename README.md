@@ -1,3 +1,18 @@
+# Set up Env
+sudo apt update && sudo apt upgrade -y
+## Install NVM
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.4/install.sh | bash
+source ~/.bashrc
+nvm --version
+
+
+## Install Node.js and npm
+nvm install 16
+nvm use 16
+
+## Insatll package
+npm install
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
