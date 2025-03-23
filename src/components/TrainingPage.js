@@ -19,11 +19,43 @@ const cycles = {
   deload: { rm: 40, times: [25, 30], sets: 6 },
 };
 
+// Define mix mode weight mappings for each cycle
+const mixModeWeights = {
+  light: {
+    Legs: 'light',
+    Chest: 'medium',
+    Back: 'heavy',
+    Shoulder: 'heavy',
+    Arm: 'light'
+  },
+  medium: {
+    Legs: 'medium',
+    Chest: 'heavy',
+    Back: 'light',
+    Shoulder: 'heavy',
+    Arm: 'medium'
+  },
+  heavy: {
+    Legs: 'heavy',
+    Chest: 'light',
+    Back: 'medium',
+    Shoulder: 'heavy',
+    Arm: 'heavy'
+  },
+  deload: {
+    Legs: 'deload',
+    Chest: 'deload',
+    Back: 'deload',
+    Shoulder: 'deload',
+    Arm: 'deload'
+  }
+};
 
 const muscleGroups = ["Legs", "Chest", "Back", "Shoulder", "Arm"];
 
 const TrainingPage = () => {
   const [expandedGroup, setExpandedGroup] = useState(null);
+  const [isMixMode, setIsMixMode] = useState(false);
   // const [username, setUsername] = useState('');
 
 
@@ -72,14 +104,35 @@ const TrainingPage = () => {
     setExpandedGroup(expandedGroup === group ? null : group);
   };
 
+  const getCycleForGroup = (group) => {
+    if (isMixMode) {
+      // If it's deload cycle, everything stays deload
+      if (trainingSession.currentCycle === 'deload') {
+        return 'deload';
+      }
+      // Otherwise get the specific weight for the current cycle and group
+      return mixModeWeights[trainingSession.currentCycle][group] || trainingSession.currentCycle;
+    }
+    return trainingSession.currentCycle;
+  };
+
   return (
     <div className="outerContainer">
       <div className="container">
         <h1 className="title">Training Page</h1>
-        <h2>
-          {/* Current Cycle: {currentCycle.charAt(0).toUpperCase() + currentCycle.slice(1)} */}
-          Current Cycle: {trainingSession.currentCycle}
-        </h2>
+        <div className="cycleHeader">
+          <h2>
+            Current Cycle: {trainingSession.currentCycle}
+          </h2>
+          <label className="mixModeLabel">
+            <input
+              type="checkbox"
+              checked={isMixMode}
+              onChange={(e) => setIsMixMode(e.target.checked)}
+            />
+            Mix Mode
+          </label>
+        </div>
 
         {muscleGroups.map((group) => {
           // console.log("trainingSession.trainedGroups: ", trainingSession.trainedGroups);
@@ -87,11 +140,17 @@ const TrainingPage = () => {
             const groupExercises = exercises.filter(
             (exercise) => exercise.group.slice(0, 3).toUpperCase() === group.slice(0, 3).toUpperCase()
             );
+            const effectiveCycle = getCycleForGroup(group);
 
           return (
             <div key={group} className="groupHeader">
               <h3 className="groupTitle" onClick={() => toggleGroup(group)}>
                 {group.charAt(0).toUpperCase() + group.slice(1)}
+                {isMixMode && (
+                  <span className="mixModeIndicator">
+                    ({effectiveCycle})
+                  </span>
+                )}
               </h3>
               {isTrained ? (
                 <button onClick={() => handleRetrain(group)} className="button">
@@ -114,12 +173,12 @@ const TrainingPage = () => {
                       <p>
                         Weight:{" "}
                         {Math.round(
-                          exercise.max1RM * cycles[trainingSession.currentCycle].rm / 100
+                          exercise.max1RM * cycles[effectiveCycle].rm / 100
                         )}{" "}
                         lb
                       </p>
-                      <p>Reps: {cycles[trainingSession.currentCycle].times.join(" - ")}</p>
-                      <p>Sets: {cycles[trainingSession.currentCycle].sets}</p>
+                      <p>Reps: {cycles[effectiveCycle].times.join(" - ")}</p>
+                      <p>Sets: {cycles[effectiveCycle].sets}</p>
                     </div>
                   ))}
                 </div>
