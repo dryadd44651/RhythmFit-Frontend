@@ -20,7 +20,7 @@ const PrivateRoute = ({ element }) => {
 
   if (isAuthenticated === null) {
     return <div>Loading...</div>; // 可自定義 Loading UI
-  } else if (true) {
+  } else if (isAuthenticated) {
     console.log("Private route auth", isAuthenticated);
   } else {
     console.log("Private route not auth", isAuthenticated);

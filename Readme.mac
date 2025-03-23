@@ -1,0 +1,67 @@
+
+To set up your environment on macOS, you’ll need to adjust the instructions slightly since macOS uses Homebrew for package management. Here’s how you can modify the setup steps for macOS:
+
+⸻
+
+Set Up Environment on macOS
+
+1. Update Homebrew
+
+First, ensure that Homebrew is up to date:
+
+brew update && brew upgrade
+
+2. Install NVM (Node Version Manager)
+
+macOS does not come with NVM pre-installed, so you need to install it manually:
+
+brew install nvm
+
+After installation, set up NVM by adding the following lines to your ~/.zshrc (or ~/.bashrc if using Bash):
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
+[ -s "/opt/homebrew/opt/nvm/etc/bash_completion" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion"
+
+Then, reload the shell configuration:
+
+source ~/.zshrc
+
+Verify that NVM is installed:
+
+nvm --version
+
+3. Install Node.js and npm
+
+Now, install Node.js (version 16 as per your README):
+
+nvm install 16
+nvm use 16
+
+Set Node.js 16 as the default version:
+
+nvm alias default 16
+
+Verify installation:
+
+node -v
+npm -v
+
+4. Install Project Dependencies
+
+Navigate to your project directory and install required packages:
+
+cd /Users/huachuang/Documents/Code/RhythmFit/RhythmFit-Frontend
+npm install
+
+5. Start the Development Server
+
+Run the following command to start your React app:
+
+npm start
+
+This will launch the application at http://localhost:3000.
+
+⸻
+
+Would you like me to update your README file to include macOS setup instructions? 🚀

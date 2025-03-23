@@ -1,0 +1,45 @@
+It looks like Homebrew is either not installed or not properly added to your system’s PATH. Follow these steps to fix it:
+
+1. Check if Homebrew is Installed
+
+Run this command:
+
+which brew
+
+If it returns nothing, Homebrew is not installed, and you need to install it.
+
+2. Install Homebrew (if not installed)
+
+If brew is not found, install Homebrew using this command:
+
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+3. Add Homebrew to Your PATH
+
+After installation, Homebrew might not be recognized because it’s not in your shell’s PATH. Add it manually:
+
+For Apple Silicon (M1/M2/M3 Macs)
+
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zshrc
+source ~/.zshrc
+
+For Intel Macs
+
+echo 'eval "$(/usr/local/bin/brew shellenv)"' >> ~/.zshrc
+source ~/.zshrc
+
+4. Verify Homebrew Installation
+
+Run:
+
+brew --version
+
+If this command returns a version number, Homebrew is successfully installed.
+
+5. Proceed with Environment Setup
+
+Once Homebrew is working, you can continue with:
+
+brew update && brew upgrade
+
+Let me know if you run into any issues! 🚀

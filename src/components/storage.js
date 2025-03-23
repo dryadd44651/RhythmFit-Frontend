@@ -132,7 +132,6 @@ export const refreshAccessToken = async (navigate) => {
   const refreshToken = localStorage.getItem('refreshToken');
   if (!refreshToken) {
     console.error("Refresh token not found");
-    // navigate('/login');
     return;
   }
 
@@ -145,7 +144,6 @@ export const refreshAccessToken = async (navigate) => {
     return response.data.access;
   } catch (err) {
     console.error("Failed to refresh token:", err);
-    navigate('/login');
   }
 };
 
